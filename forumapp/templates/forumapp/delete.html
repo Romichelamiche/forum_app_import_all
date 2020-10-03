@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Delete problem</title>
+    <style type="text/css">
+        .delete_image
+        {
+            width:20px;
+         }
+         .delete_image:hover
+         {
+            width:30px;
+         }
+    </style>
+</head>
+<body>
+    <form action="{% url 'forumapp:delete' pb_to_delete.id %}" method="post">
+        <img src="/static/forumapp/images/delete.png" type="submit" />
+    </form>
+</body>
+</html>

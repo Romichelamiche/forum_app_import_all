@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+        <link rel="stylesheet" type="text/css" href="{% static 'forumapp/style.css' %}?20200812" />
+        <title>Index des problemes</title>
+        <style type="text/css">
+            #nb_problems
+            {
+                padding-left: 75px;
+
+            }
+            #nb_problems:hover
+            {
+                font-size: 30px;
+            }
+            .delete_image
+            {
+                width:20px;
+             }
+             .delete_image:hover
+             {
+                width:30px;
+             }
+             svg:hover
+             {
+                height: 22px;
+                fill:red;
+             }
+
+
+        </style>
+    </head>
+
+    <body>
+            <nav class="navbar navbar-light" style="background-color: #dee0df;">
+                <a class="navbar-brand" href="{% url 'forumapp:index' %}">ForumApp</a>
+                {% include 'forumapp/search.html' %}
+            </nav>
+            {% if problems %}
+            <table class="table">
+                <thead class="thead-dark">
+                    <tr>
+                     <th scope="col" colspan="3">Problemes</th>
+                    </tr>
+                </thead>
+            {% for p in problems %}
+                    <tr class="{% cycle 'row1' 'row2' %}">
+                        <td class="cellule" height="15px" width="620px"><a href="{% url 'forumapp:detail_problem' p.id %}" >{{ p.titre_probleme }}</a> </td>
+                        <td class="cellule" height="10px" width="30px">
+                            <a href="{% url 'forumapp:edit_problem' p.id %}">
+                                <button type="button" class="btn btn-info">Modifier</button>
+                            </a>
+                        </td>
+                        <td class="cellule" height="10px" width="30px">
+                            <a href="{% url 'forumapp:delete' p.id %}">
+                                <button type="button" class="btn btn-danger">Supprimer</button>
+                            </a>
+                        </td>
+                    </tr>
+            {% endfor %}
+            {% else %}
+                <p>Aucun problème trouvé !</p>
+            {% endif %}
+            </table>
+            <!-- Pagination -->
+            {% if problems.has_other_pages %}
+                <ul class="pagination">
+            {% if problems.has_previous %}
+                <li class="page-item" ><a class="page-link" href="?page={{ problems.previous_page_number }}">&laquo;</a></li>
+            {% else %}
+                <li class="page-item disabled"><span class="page-link">&laquo;</span></li>
+            {% endif %}
+            {% for i in problems.paginator.page_range %}
+                {% if problems.number == i %}
+                    <li class="page-item active" aria-current="page"><a class="page-link" href="?page={{ i }}">{{ i }} <span class="sr-only">(current)</span></a></li>
+                {% else %}
+                    <li><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                {% endif %}
+            {% endfor %}
+            {% if problems.has_next %}
+                <li><a class="page-link" href="?page={{ problems.next_page_number }}">&raquo;</a></li>
+            {% else %}
+                <li class="page-item disabled"><span class="page-link">&raquo;</span></li>
+            {% endif %}
+                </ul>
+            {% endif %}
+
+            <div id="conteneur">
+                <div class="card border-dark mb-3">
+                    <p class="card-header">Problemes</p>
+                    <div class="card-body text-dark">
+                        <h3 class="card-text" id="nb_problems">{{ count }}</h3>
+                    </div>
+                </div>
+
+                <div class="card border-dark mb-3">
+                    <p class="card-header">Sujets les plus commentés</p>
+                    <div class="card-body text-dark">
+                        {% for p in problem_with_high_count %}
+                        <div class="card-text">
+                            <ul>
+                                <li>{{ p.probleme__titre_probleme }}</li>
+                            </ul>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="card border-dark mb-3">
+                    <p class="card-header">Autres pages</p>
+                    <div class="card-body text-dark">
+                        <ul>
+                            <li><a href="https://www.mairie11.paris.fr/">Mairie du 11eme</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+        <footer class="footer">
+            <div class="container">
+                <span class="text-muted"> Copyright Romiche </span>
+            </div>
+        </footer>
+    </body>
+</html>

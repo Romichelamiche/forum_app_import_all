@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>TEST</title>
+</head>
+<body>
+    <form class="form-inline" action="{% url 'forumapp:search' %}" methode="get" accept-charset="utf-8">
+        <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="query">
+        <button class="btn btn-dark" id="search" type="submit">Rechercher</button>
+        <button class="btn btn-link" type="button"><a href="{% url 'forumapp:creation_problem' %}">Publier</a></button>
+    </form>
+</body>
+</html>

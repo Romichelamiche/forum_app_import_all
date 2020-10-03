@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+    <head>
+        {% block styles %}
+        <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous" />
+        <link rel="stylesheet" type="text/css" href="{% static 'forumapp/style.css' %}?20200812" />
+        <title>Création de problème</title>
+        <style  type="text/css">
+            .card
+            {
+                max-width: 600px;
+                margin-top:20px;
+                margin-left:100px;
+            }
+            #id_desc_probleme
+            {
+                height: 100px;
+            }
+            #id_membre_createur_probleme
+            {
+                width: 180px;
+            }
+
+        </style>
+        {% endblock %}
+    </head>
+<body>
+        <nav class="navbar navbar-light" style="background-color: #dee0df;">
+                <a class="navbar-brand" href="{% url 'forumapp:index' %}">Detail du problème </a>
+        </nav>
+        <div class="card">
+                <h5 class="card-header"> Probleme n°{{ problem.id }}</h5>
+                <div class="card-body">
+                        <h5 class="card-title"> {{ problem.titre_probleme }} </h5>
+                    <p class="card-text"> {{ problem.desc_probleme }}</p> <br />
+                    <a class="btn btn-primary" href="{% url 'forumapp:edit_problem' pk=problem.pk %}" role="button">Edit</a>
+                </div>
+        </div>
+
+</body>
+</html>

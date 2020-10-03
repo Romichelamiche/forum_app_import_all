@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous" />
+    <link rel="stylesheet" type="text/css" href="{% static 'forumapp/style.css' %}?20200812" />
+    <title>Add comment</title>
+</head>
+<body>
+    <form action="{% url 'forumapp:add_comment' problem.id %}" method="post">
+        {% csrf_token %}
+        <div class="card" id="card_commentaire">
+            <div class="card-header">
+             Commentaires
+            </div>
+            <div class="card-body">
+                <div class="form-group">
+                        <p>{{ form.commentaire }}</p>
+                        <input type="submit" class="btn btn-outline-primary" value="Ajouter un commentaire">
+                </div>
+            </div>
+        </div>
+    </form>
+    {% for c in commentaires %}
+        <div class="card">
+            <div class="card-header">
+             Ajouté le {{ c.created_at }}
+            </div>
+            <div class="card-body">
+                <div class="form-group">
+                        <p id="id_commentaire_probleme">{{ c.commentaire }}</p>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+
+</body>
+</html>

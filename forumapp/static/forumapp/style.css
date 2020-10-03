@@ -1,0 +1,313 @@
+
+
+/* HEADER PART */
+
+.form-inline
+{
+    position: absolute;
+    right:350px;
+    top: 8px;
+}
+
+/* LIENS */
+a {
+    text-decoration: none;
+}
+
+
+a:link {
+
+}
+
+a:visited {
+
+    text-decoration: none;
+}
+
+a:focus {
+
+}
+
+a:hover {
+
+}
+
+a:active {
+
+}
+#copyright
+{
+    margin: 1px;
+    padding: 2px;
+}
+.mail
+{
+    text-decoration: none;
+}
+
+h1
+{
+	text-align: center;
+	padding-top: 20px;
+}
+
+h3
+{
+	font-style: bold;
+}
+
+
+.footer_index
+{
+	font-style: italic;
+	border-top: 2px grey solid;
+	width:100%;
+	margin-top: 78px;
+	margin-bottom: none;
+	background-color: white;
+	padding: 15px;
+}
+
+ .pb, .solutions, .membres
+ {
+ 	width: 200px;
+ 	height: 90px;
+ 	max-width: 200px;
+ 	max-height: 90px;
+ 	background-color: white;
+	border:	1px white solid;
+	box-shadow: 1px 1px 0px grey;
+	font-style: bold;
+	margin-bottom: 20px;
+ }
+
+.liste_problemes /* Tableau principal */
+{
+ 	background-color: white;
+	border-right:0;
+	font-style: bold;
+	margin-bottom: 20px;
+    position: absolute;
+    top: 250px;
+    left: 120px;
+}
+
+.row1
+{
+    background-color: rgba(196, 195, 194, 0.3);
+}
+.row2
+{
+    padding-left:20px;
+    background-color: white;
+}
+.en_tete
+{
+    padding-left: 20px;
+    color: grey;
+    font-size: 13px;
+    border-bottom: 1px grey solid;
+    text-transform: uppercase;
+
+}
+.cellule
+{
+    padding-top: 5px;
+    padding-left: 30px;
+    border-bottom: 1px grey solid;
+}
+
+.pagination
+{
+    margin-left: 100px;
+}
+
+.card border-dark mb-3
+{
+    margin-left: 10px;
+}
+.pb1, .pb2
+{
+	max-width: 400px;
+	max-height: 100px;
+	width:300px;
+	height:55px;
+	word-wrap: break-word;
+	background-color: white;
+	border:	1px white solid;
+	box-shadow: 1px 1px 0px grey;
+	font-style: bold;
+	padding-left: 20px;
+	padding-top:2px;
+	padding-right: 20px;
+	margin-top: 10px;
+	margin-right: 10px;
+}
+
+
+.stats_sujets, .autres_pages, .category
+{
+	width: 200px;
+	height: 90px;
+	max-width: 200px;
+	max-height: 90px;
+	word-wrap: break-word;
+	background-color: white;
+	border:	1px white solid;
+	box-shadow: 1px 1px 0px grey;
+	color: grey;
+	/*padding-left: 20px;
+	padding-top:2px;
+	padding-right: 20px;*/
+	margin-top: 10px;
+	margin-right: 10px;
+	margin-left: 30px;
+}
+
+.cat, .stats_sujets_nav, .autres_pages_nav
+{
+	border-bottom: 1px rgb(232, 233, 237) solid;
+	margin: 5px;
+	padding: 5px;
+
+
+}
+
+
+
+.pb1_nav
+{
+	width:300px;
+	height:55px;
+	max-width: 300px;
+	max-height: 55px;
+}
+
+.pb2_nav
+{
+	width:300px;
+	height:55px;
+	max-width: 300px;
+	max-height: 55px;
+}
+
+.recherche
+{
+	padding-right: 140px;
+}
+
+.card border-dark mb-3
+{
+    max-width: 300px;
+}
+/* ----- Apparences dynamiques ------*/ 
+
+.
+
+_nav:hover
+{
+	color: rgb(161, 105, 245);
+	font-size: 15px;
+}
+
+.pb1:hover
+{
+	color: rgb(161, 105, 245);
+	box-shadow: 2px 2px 0px grey;
+}
+
+.pb2_nav:hover
+{
+	color: rgb(161, 105, 245);
+	font-size: 15px;
+}
+
+.pb2:hover
+{
+	color: rgb(161, 105, 245);
+	box-shadow: 2px 2px 0px grey;
+}
+
+.cat:hover
+{
+	font-size: 15px;
+	color: rgb(37, 35, 41);
+	border-bottom: 1px rgb(37, 35, 41) solid;
+}
+
+.stats_sujets_nav:hover
+{
+	font-size: 15px;
+	color: rgb(37, 35, 41);
+	border-bottom: 1px rgb(37, 35, 41) solid;
+}
+
+.autres_pages_nav:hover
+{
+	font-size: 15px;
+	color: rgb(37, 35, 41);
+	border-bottom: 1px rgb(37, 35, 41) solid;
+}
+
+.header_menu_deroulant:hover
+{
+	text-decoration: underline; 
+}
+
+#header_image:hover
+{
+	width: 30px;
+	height: 30px;
+}
+
+
+
+/* ----- Gestion des conteneurs ----- */
+
+#conteneur
+{
+    position: absolute;
+    right: 50px;
+    top: 120px;
+    display:flex;
+    flex-direction: column;
+    max-width:250px;
+    border: 0;
+    justify-content: flex-end;
+    align-content: flex-end;
+}
+/* FOOTER */
+
+.footer
+{
+    position:fixed;
+    bottom:0px;
+}
+/* ------- Page creation probleme --------- */
+table
+{
+ max-width: 800px;
+ margin-top:80px;
+ margin-left: 100px;
+}
+
+
+td
+{
+    padding-bottom: 10px;
+}
+
+#créer
+{
+    margin-top: 50px;
+    padding-left:20px;
+    padding-right: 20px;
+
+}
+
+/* ----- page detail problem ------ */
+.problem
+{
+    font-weight: bold;
+    font-size: 15px;
+}
