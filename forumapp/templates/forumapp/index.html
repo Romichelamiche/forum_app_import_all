@@ -3,11 +3,17 @@
 
 {% for p in problems %}
     <div class="container">
-        <div class="row">
+        <div class="row justify-content-md-center">
+            <div class="col-md-auto">
+                <a class="btn btn-outline-info" href="{% url 'forumapp:creation_problem' %}" role="button">Créer un sujet</a>
+            </div>
+        </div>
+        <br>
+        <div class="row justify-content-end">
             <div class="col-10">
                 <div class="card">
                   <div class="card-body">
-                    <h5 class="card-title">{{ p.titre_probleme }}</h5>
+                    <h5 class="card-title"><a href="{% url 'forumapp:edit_problem' p.id %}">{{ p.titre_probleme }}</a></h5>
                     <!--<h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>-->
                     <p class="card-text">{{ p.desc_probleme }}</p>
             <!--        <a href="#" class="card-link">Card link</a>-->
