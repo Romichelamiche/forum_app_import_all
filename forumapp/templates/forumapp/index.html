@@ -1,14 +1,13 @@
 {% extends 'forumapp/base.html' %}
 {% block content %}
 
+<div class="row justify-content-md-center">
+    <div class="col-md-auto">
+        <a class="btn btn-outline-info" href="{% url 'forumapp:creation_problem' %}" role="button">Créer un sujet</a>
+    </div>
+</div>
 {% for p in problems %}
     <div class="container">
-        <div class="row justify-content-md-center">
-            <div class="col-md-auto">
-                <a class="btn btn-outline-info" href="{% url 'forumapp:creation_problem' %}" role="button">Créer un sujet</a>
-            </div>
-        </div>
-        <br>
         <div class="row justify-content-end">
             <div class="col-10">
                 <div class="card">
