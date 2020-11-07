@@ -4,8 +4,12 @@ from forumapp.models import Membre, Probleme, Solution, Commentaire
 from django.template import loader
 from django.shortcuts import get_object_or_404, render, redirect
 from forumapp.forms import ProblemeForm, CommentaireForm
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.core.paginator import Paginator
 from django.db.models import Q, Count
+from django.contrib.auth import authenticate, login, logout
+from django.contrib import messages
+from .forms import SignUpForm
 
 from django.urls import reverse
 import datetime
@@ -100,20 +104,56 @@ def delete_problem(request, pk=None):
     pb_to_delete.delete()
     return redirect('forumapp:index')
 
-"""
-def add_comment(request, pk):
-    problem = get_object_or_404(Probleme, pk=pk)
-    commentaires = Commentaire.objects.filter(problem=problem)
-    if request.method == 'POST':
-        form = CommentaireForm(request.POST)
-        if form.is_valid():
-            comment = form.save()
-            return redirect('forumapp:add_comment', pk=problem.pk)
+def login_user(request):
+    if request.method == "POST":
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username=username, password=password) #on reprend les names des champs html
+        if user is not None:
+            login(request, user)
+            messages.success(request, "Vous êtes connecté !")
+            return redirect('forumapp:index')
+
+        else:
+            messages.success(request, "Impossible de vous identifiez, merci de recommencer")
+            return redirect('forumapp:login_function')
     else:
-        form = CommentaireForm()
-    return render(request,'forumapp/comment.html', {'form':form, 'problem':problem, 'commentaires':commentaires})
-
-"""
+        return render(request, 'forumapp/login.html', {})
 
 
+def logout_user(request):
+    logout(request)
+    return redirect('forumapp:login_function')
+
+def register_user(request):
+    if request.method == 'POST':
+        form = SignUpForm(request.POST)
+        if form.is_valid():
+            form.save()
+            username = request.POST['username']
+            password = request.POST['password1']
+            user = authenticate(username = username, password = password)
+            login(request, user)
+            messages.success(request, "Vous êtes connecté, merci !")
+            return redirect('forumapp:index')
+
+    else:
+        form = SignUpForm()
+    return render (request, 'forumapp/register.html', {'form':form})
+
+def edit_user(request):
+    if request.method == 'POST':
+        form = SignUpForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            username = request.POST['username']
+            password = request.POST['password1']
+            user = authenticate(username = username, password = password)
+            login(request, user)
+            messages.success(request, "Vous êtes connecté, merci !")
+            return redirect('forumapp:index')
+
+    else:
+        form = SignUpForm(instance=request.user)
+    return render (request, 'forumapp/register.html', {'form':form})
 
