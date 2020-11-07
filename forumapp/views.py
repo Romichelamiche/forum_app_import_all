@@ -41,7 +41,7 @@ def problem_creation(request):
         form = ProblemeForm(request.POST)
         if form.is_valid():
             post = form.save()
-            return redirect ('forumapp:detail_problem', pk=post.pk)
+            return redirect ('forumapp:edit_problem', pk=post.pk)
     else:
         form = ProblemeForm()
     return render(request, 'forumapp/creation.html', {'form':form})
