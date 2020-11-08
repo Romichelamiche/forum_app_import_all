@@ -14,13 +14,13 @@
         <form action="" method="post">
             {% csrf_token %}
             <div class="row">
-                <div class="col-5">
+                <div class="col-12">
                     <label for="titre">Titre</label>
                     <p id="titre">{{ form.titre_probleme }}</p>
                 </div>
             </div>
             <div class="row">
-                <div class="col-5">
+                <div class="col-12">
                     <label for="id_desc_probleme">Description</label>
                     <p id="id_desc_probleme"> {{ form.desc_probleme }}</p>
                 </div>
@@ -32,10 +32,31 @@
         </div>
     </div>
 <br />
+{% for c in post.commentaire_set.all %}
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    Ajouté le {{ c.created_at }}
+                </div>
+                <div class="card-body">
+                    <div class="form-group">
+                        <p id="id_commentaire_probleme">{{ c.commentaire }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<br />
+{% endfor %}
+<br />
+
 {% if post %}
 <div class="container">
     <div class="row">
-        <div class="col-8">
+        <div class="col-12">
             <div class="card">
                 <div class="card-header">
                     Nouvelle réponse
@@ -55,21 +76,5 @@
     </div>
 </div>
 <br />
-{% for c in post.commentaire_set.all %}
-<div class="card">
-    <div class="card-header">
-     Ajouté le {{ c.created_at }}
-    </div>
-    <div class="card-body">
-        <div class="form-group">
-                <p id="id_commentaire_probleme">{{ c.commentaire }}</p>
-        </div>
-    </div>
-</div>
-<br/>
-{% endfor %}
-
 {% endif %}
-
-</div>
 {% endblock %}
