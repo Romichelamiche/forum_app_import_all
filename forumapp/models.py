@@ -1,4 +1,6 @@
 from django.db import models
+from django.contrib.auth.models import ( AbstractBaseUser, BaseUserManager )
+
 
 class Membre(models.Model):
     nom_membre = models.CharField(max_length=200)
@@ -22,12 +24,9 @@ class Solution(models.Model):
 
 
 class Probleme(models.Model):
-    membre_createur_probleme = models.ForeignKey('Membre', on_delete=models.CASCADE)
-    date_publicaiton = models.DateField(verbose_name='Date de publication')
     titre_probleme = models.CharField(max_length=200)
     desc_probleme = models.TextField(verbose_name='Description')
-    resolu_probleme = models.BooleanField()
-    commentaire_probleme = models.TextField(verbose_name='Commentaire', null=True)
+    resolu_probleme = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, null=True)
 

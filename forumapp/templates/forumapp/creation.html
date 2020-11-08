@@ -9,28 +9,36 @@
 {% endblock %}
 
 {% block content %}
-    <div class="container">
-        <div class="form-group">
-        <form action="" method="post">
-            {% csrf_token %}
-            <div class="row">
-                <div class="col-12">
-                    <label for="titre">Titre</label>
-                    <p id="titre">{{ form.titre_probleme }}</p>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-12">
-                    <label for="id_desc_probleme">Description</label>
-                    <p id="id_desc_probleme"> {{ form.desc_probleme }}</p>
-                </div>
-            </div>
-                    <input class="btn btn-info" type="submit" value="Enregistrer">
-                    <input class="btn btn-danger" type="reset" value="Annuler">
 
-        </form>
-        </div>
+<div class="row justify-content-md-center">
+    <div class="col-md-auto">
+        <a class="btn btn-outline-info" href="{% url 'forumapp:index' %}" role="button">Retour liste des sujets</a>
     </div>
+</div>
+<br />
+
+<div class="container">
+    <div class="form-group">
+    <form action="" method="post">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-12">
+                <label for="titre">Titre</label>
+                <p id="titre">{{ form.titre_probleme }}</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <label for="id_desc_probleme">Description</label>
+                <p id="id_desc_probleme"> {{ form.desc_probleme }}</p>
+            </div>
+        </div>
+                <input class="btn btn-info" type="submit" value="Enregistrer">
+                <input class="btn btn-danger" type="reset" value="Annuler">
+
+    </form>
+    </div>
+</div>
 <br />
 {% for c in post.commentaire_set.all %}
 <div class="container">

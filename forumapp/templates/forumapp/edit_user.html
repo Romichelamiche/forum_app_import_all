@@ -1,0 +1,32 @@
+{% extends 'forumapp/base.html' %}
+
+{% block content %}
+<div class="col-md-3 offset-md-3">
+    <h2>Inscription</h2>
+    <div class="form-group">
+        <form method="POST">
+            {% csrf_token %}
+            {% if form.errors %}
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                    <p>Votre formulaire contient des erreurs...</p>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            {% endif %}
+
+            <br>
+                {{ form.username }}
+            <br>
+                {{ form.email }}
+            <br>
+                {{ form.password1 }}
+            <br>
+                {{ form.password2 }}
+            <br>
+            <input class="btn btn-secondary" type="submit" value="Valider">
+        </form>
+    </div>
+</div>
+
+{% endblock %}
