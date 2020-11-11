@@ -5,7 +5,7 @@ from django.template import loader
 from django.shortcuts import get_object_or_404, render, redirect
 from forumapp.forms import ProblemeForm, CommentaireForm
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
-from django.core.paginator import Paginator
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q, Count
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
@@ -16,23 +16,26 @@ import datetime
 
 
 def problem_index(request, ):
-    problem_list = Probleme.objects.all()
-    page_number = request.GET.get('page', 1)
+    # Gérer la pagination
+    problems = Probleme.objects.all()
+    paginator = Paginator(problems, 6)
+    page = request.GET.get('page', 1) #Ramene 1 si page est vide
 
-    paginator = Paginator(problem_list, 6)
-
-    problems = paginator.page(page_number)
-
-    #Compter le nombre de problemes en tout
-    problem_count = problem_list.count()
+    try:
+        problems_list = paginator.page(page) #on construit une page via paginator
+    except PageNotAnInteger:
+        problems_list = paginator.page(1)
+    except EmptyPage:
+        problems_list = paginator.page(paginator.num_pages)
 
     #Compter le nombre total de commentaires groupés par probleme
-    comment_count_per_problem = Commentaire.objects.values('probleme__titre_probleme').annotate(com_count=Count('commentaire')).exclude(probleme__titre_probleme=None).order_by('-com_count')
+    #comment_count_per_problem = Commentaire.objects.values('probleme__titre_probleme').annotate(com_count=Count('commentaire')).exclude(probleme__titre_probleme=None).order_by('-com_count')
 
     template = loader.get_template('forumapp/index.html')
     context = {'problems': problems,
-               'count': problem_count,
-               'problem_with_high_count': comment_count_per_problem,
+               'problems_list': problems_list,
+               'paginator' : paginator,
+               'page' : page,
                }
     return render(request, 'forumapp/index.html', context)
 
