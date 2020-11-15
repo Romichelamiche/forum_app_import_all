@@ -15,8 +15,9 @@ from django.urls import reverse
 import datetime
 
 
-def problem_index(request, ):
-    # Gérer la pagination
+def problem_index(request, ): #Vue qui gère la page d'index
+
+    ## Pagination ##
     problems = Probleme.objects.all()
     paginator = Paginator(problems, 6)
     page = request.GET.get('page', 1) #Ramene 1 si page est vide
@@ -28,14 +29,21 @@ def problem_index(request, ):
     except EmptyPage:
         problems_list = paginator.page(paginator.num_pages)
 
-    #Compter le nombre total de commentaires groupés par probleme
-    #comment_count_per_problem = Commentaire.objects.values('probleme__titre_probleme').annotate(com_count=Count('commentaire')).exclude(probleme__titre_probleme=None).order_by('-com_count')
+    ## Bloc gauche ##
+    # sujets totaux
+    problems.count()
+    # sujets ayant le plus de commentaire
+    comments_per_problems = Commentaire.objects.values('probleme_id','probleme__titre_probleme').annotate(com_count=Count('commentaire')).exclude(probleme__titre_probleme=None).order_by('-com_count')
+    # sujets récents (sortir les 5 derniers sujets grâce au slice [0:5]
+    problems_recent = problems.order_by('-created_at')[:5]
 
-    template = loader.get_template('forumapp/index.html')
+    #template = loader.get_template('forumapp/index.html')
     context = {'problems': problems,
                'problems_list': problems_list,
                'paginator' : paginator,
                'page' : page,
+               'comments_per_problems': comments_per_problems,
+               'problems_recent' : problems_recent,
                }
     return render(request, 'forumapp/index.html', context)
 

@@ -1,4 +1,18 @@
 {% extends 'forumapp/base.html' %}
+
+{% block styles_specifiques %}
+
+<style type="text/css">
+.card-text {
+        padding-bottom : 0px;
+        margin-bottom: 1px;
+                }
+#bouillant, #toutchaud {
+        font-style: italic;
+            }
+</style>
+{% endblock %}
+
 {% block content %}
 
 <div class="row justify-content-md-center">
@@ -7,24 +21,49 @@
     </div>
 </div>
 <br>
-{% for p in problems_list %}
+
+<!-- Bloc Gauche Begin -->
     <div class="container">
         <div class="row justify-content-end">
-            <div class="col-10">
+            <div class="col-3">
+                <div class="card bg-light mb-3" style="max-width: 18rem;">
+                    <div class="card-header">< <font size="5pt"><strong>{{ problems.count }}</strong></font> sujets ></div>
+                    <div class="card-body">
+
+                        <!-- sujets les plus commentés -->
+                        <h5 class="card-title" id="bouillant">#Bouillants</h5>
+                        {% for c in comments_per_problems %}
+                        <p class="card-text"><a href="{% url 'forumapp:edit_problem' c.probleme_id %}">{{ c.probleme__titre_probleme }}</a></p>
+                        {% endfor %}
+                    </div>
+                    <div class="card-body">
+
+                        <!-- sujets récents -->
+                        <h5 class="card-title" id="toutchaud">#ToutChaud</h5>
+                        {% for p in problems_recent %}
+                        <p class="card-text"><a href="{% url 'forumapp:edit_problem' p.id %}">{{ p.titre_probleme }}</a></p>
+                        {% endfor %}
+                    </div>
+
+                <!-- Sujets récents -->
+                </div>
+            </div>
+<!-- Bloc Gauche End -->
+
+<!-- Liste des Sujets -->
+            <div class="col align-self-end">
+                {% for p in problems_list %}
                 <div class="card">
                   <div class="card-body">
                     <h5 class="card-title"><a href="{% url 'forumapp:edit_problem' p.id %}">{{ p.titre_probleme }}</a></h5>
-                    <!--<h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>-->
                     <p class="card-text">{{ p.desc_probleme }}</p>
-            <!--        <a href="#" class="card-link">Card link</a>-->
-            <!--        <a href="#" class="card-link">Another link</a>-->
                   </div>
                 </div>
+                <br />
+                {% endfor %}
             </div>
         </div>
     </div>
-    <br>
-{% endfor %}
 
 <!-- Pagination -->
 {% if problems_list.has_other_pages %}
