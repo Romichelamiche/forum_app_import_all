@@ -50,6 +50,8 @@ def problem_index(request, ): #Vue qui gère la page d'index
     return render(request, 'forumapp/index.html', context)
 
 def problem_creation(request): #Vue qui gère la création de sujet
+    if not request.user.is_authenticated: #vérifie que l'utilisateur est connecté
+        return redirect('forumapp:login_function')
     if request.method == 'POST':
         form = ProblemeForm(request.POST)
         if form.is_valid():
