@@ -83,7 +83,7 @@ WSGI_APPLICATION = 'forum.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
+        'ENGINE': 'django.db.backends.sqlite3', #django.db.backends.sqlite3'
         'NAME': '/Users/romainrodigue/Desktop/Python/Django/forum/db_071120.sqlite3',
         'USER': '',
         'PASSWORD': '',

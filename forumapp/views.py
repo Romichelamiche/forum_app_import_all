@@ -3,13 +3,15 @@ from django.http import HttpResponse, Http404, HttpResponseRedirect
 from forumapp.models import Membre, Probleme, Solution, Commentaire
 from django.template import loader
 from django.shortcuts import get_object_or_404, render, redirect
-from forumapp.forms import ProblemeForm, CommentaireForm
+from forumapp.forms import ProblemeForm, CommentaireForm, SignUpForm, ChangeUserForm, ChangeUserPassword
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q, Count
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout, views as auth_views
 from django.contrib import messages
-from .forms import SignUpForm
+from django.contrib.messages.views import SuccessMessageMixin
+
+
 
 from django.urls import reverse
 import datetime
@@ -47,7 +49,7 @@ def problem_index(request, ): #Vue qui gère la page d'index
                }
     return render(request, 'forumapp/index.html', context)
 
-def problem_creation(request):
+def problem_creation(request): #Vue qui gère la création de sujet
     if request.method == 'POST':
         form = ProblemeForm(request.POST)
         if form.is_valid():
@@ -58,14 +60,14 @@ def problem_creation(request):
     return render(request, 'forumapp/creation.html', {'form':form})
 
 
-def problem_detail(request, pk):
+def problem_detail(request, pk): #A supprimer ?
     try:
         problem = Probleme.objects.get(pk = pk)
     except Probleme.DoesNotExist:
         raise Http404("Subject does not exist")
     return render(request, 'forumapp/detail.html', {'problem': problem})
 
-def problem_edit(request, pk):
+def problem_edit(request, pk): #Vue qui gère l'édition des sujets
     post = get_object_or_404(Probleme, pk=pk)
     commentaires = Commentaire.objects.filter(probleme=post).order_by('-updated_at')
     form = ProblemeForm(instance=post)
@@ -89,7 +91,7 @@ def problem_with_a_solution(request,):
     problem_solved = Probleme.objects.filter(resolu_probleme=1)
     return HttpResponse(problem_solved)
 
-def search(request):
+def search(request): #Vue qui gère la recherche dans la navbar
     query = request.GET.get('query')
     if not query:
         problem = Probleme.objects.all()
@@ -110,12 +112,12 @@ def search(request):
     }
     return render(request, 'forumapp/index.html', context)
 
-def delete_problem(request, pk=None):
+def delete_problem(request, pk=None): #Vue qui gère la suppression de sujets
     pb_to_delete = get_object_or_404(Probleme, pk=pk)
     pb_to_delete.delete()
     return redirect('forumapp:index')
 
-def login_user(request):
+def login_user(request): #Vue qui gère la page de connexion/login
     if request.method == "POST":
         username = request.POST['username']
         password = request.POST['password']
@@ -132,11 +134,11 @@ def login_user(request):
         return render(request, 'forumapp/login.html', {})
 
 
-def logout_user(request):
+def logout_user(request): #Vue qui gère la deconnexion/logout
     logout(request)
     return redirect('forumapp:login_function')
 
-def register_user(request):
+def register_user(request): #s'inscrire
     if request.method == 'POST':
         form = SignUpForm(request.POST)
         if form.is_valid():
@@ -152,19 +154,25 @@ def register_user(request):
         form = SignUpForm()
     return render (request, 'forumapp/register.html', {'form':form})
 
-def edit_user(request):
+def edit_user(request): #editer profil
     if request.method == 'POST':
-        form = SignUpForm(request.POST, instance=request.user)
+        form = ChangeUserForm(request.POST, instance=request.user)
         if form.is_valid():
             form.save()
-            username = request.POST['username']
-            password = request.POST['password1']
-            user = authenticate(username = username, password = password)
-            login(request, user)
-            messages.success(request, "Vous êtes connecté, merci !")
-            return redirect('forumapp:index')
+            messages.success(request, "Votre profil a bien été modifié")
+            return redirect('forumapp:edit_function')
 
     else:
-        form = SignUpForm(instance=request.user)
-    return render (request, 'forumapp/register.html', {'form':form})
+        form = ChangeUserForm(instance=request.user)
+    return render (request, 'forumapp/edit_user.html', {'form':form})
+
+class PasswordChangeConfView(SuccessMessageMixin, auth_views.PasswordChangeView) :
+    template_name = 'forumapp/password_change.html'
+    form_class = ChangeUserPassword
+    success_url = 'http://127.0.0.1:8000/forumapp/index'
+
+    success_message = 'Votre mot de passe a été modifié avec succès !'
+
+
+
 

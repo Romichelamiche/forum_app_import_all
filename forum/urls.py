@@ -16,8 +16,25 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import include, path
+from django.contrib.auth import views as auth_views
+from forumapp.forms import ChangeUserPassword
+from forumapp import views
+from forumapp.views import problem_index
+
+
 
 urlpatterns = [
     path('forumapp/', include('forumapp.urls')),
     path('admin/', admin.site.urls),
+    path('accounts/', include('django.contrib.auth.urls')),
+        # accounts/login/ [name='login']
+        # accounts/logout/ [name='logout']
+        # accounts/password_change/ [name='password_change']
+        # accounts/password_change/done/ [name='password_change_done']
+        # accounts/password_reset/ [name='password_reset']
+        # accounts/password_reset/done/ [name='password_reset_done']
+        # accounts/reset/<uidb64>/<token>/ [name='password_reset_confirm']
+        # accounts/reset/done/ [name='password_reset_complete']
+    #path('password_change/', auth_views.PasswordChangeView.as_view(template_name='forumapp/password_change.html', form_class=ChangeUserPassword, success_url=(path('forumapp/index', views.problem_index, name='index'))), name='password_change')
+    path('password_change/', views.PasswordChangeConfView.as_view(), name='password_change'),
 ]

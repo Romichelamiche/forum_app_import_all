@@ -1,6 +1,7 @@
 from django.urls import path
 from forumapp import views
 
+
 app_name = "forumapp"
 urlpatterns = [
     path('index', views.problem_index, name='index'),
@@ -13,8 +14,5 @@ urlpatterns = [
     path('login', views.login_user, name='login_function'),
     path('logout', views.logout_user, name='logout_function'),
     path('register', views.register_user, name='register_function'),
-    path('edit_user', views.edit_user, name='edit_function')
-
-
-
+    path('edit_user', views.edit_user, name='edit_function'),
 ]
