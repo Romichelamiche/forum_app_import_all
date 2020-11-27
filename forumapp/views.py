@@ -18,7 +18,8 @@ import datetime
 
 
 def problem_index(request, ): #Vue qui gère la page d'index
-
+    if not request.user.is_authenticated: #accès restreint aux utilisateurs connectés
+        return redirect('forumapp:login_function')
     ## Pagination ##
     problems = Probleme.objects.all()
     paginator = Paginator(problems, 6)
