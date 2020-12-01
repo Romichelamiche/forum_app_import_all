@@ -33,8 +33,16 @@
                 <p id="id_desc_probleme"> {{ form.desc_probleme }}</p>
             </div>
         </div>
-                <input class="btn btn-info" type="submit" value="Enregistrer">
-                <input class="btn btn-danger" type="reset" value="Annuler">
+        <!-- Gestion des boutons de soumission/annulation formulaire en fonction de s'il s'agit d'une édition ou d'une création -->
+        {% if post and not user.is_staff %}
+            <input class="btn btn-info" type="submit" value="Modifier" style="display:none">
+            <input class="btn btn-danger" type="reset" value="Annuler" style="display:none">
+        {% elif post and user.is_staff %}
+            <input class="btn btn-info" type="submit" value="Enregistrer">
+        {% else %}
+            <input class="btn btn-info" type="submit" value="Enregistrer">
+            <input class="btn btn-danger" type="reset" value="Annuler">
+        {% endif %}
 
     </form>
     </div>

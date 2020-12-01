@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from bootstrap_datepicker_plus import DatePickerInput
 
 
-class ProblemeForm(forms.ModelForm):
+class ProblemeFormCreate(forms.ModelForm):
 
     class Meta:
         model = Probleme
@@ -13,6 +13,16 @@ class ProblemeForm(forms.ModelForm):
         widgets = {
             'titre_probleme' : forms.TextInput(attrs={'class':'form-control'}),
             'desc_probleme' : forms.Textarea(attrs={'class':'form-control'}),
+        }
+
+class ProblemeFormUpdate(forms.ModelForm): #Creation d'un deuxième formulaire qui gère la lecture seule sur les champs "Titre et Description"
+
+    class Meta:
+        model = Probleme
+        fields = ['titre_probleme', 'desc_probleme', 'resolu_probleme']
+        widgets = {
+            'titre_probleme' : forms.TextInput(attrs={'class':'form-control', 'disabled' : True}),
+            'desc_probleme' : forms.Textarea(attrs={'class':'form-control', 'disabled' : True}),
         }
 
 class CommentaireForm(forms.ModelForm):

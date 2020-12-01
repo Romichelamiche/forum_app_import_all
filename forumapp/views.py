@@ -3,13 +3,16 @@ from django.http import HttpResponse, Http404, HttpResponseRedirect
 from forumapp.models import Membre, Probleme, Solution, Commentaire
 from django.template import loader
 from django.shortcuts import get_object_or_404, render, redirect
-from forumapp.forms import ProblemeForm, CommentaireForm, SignUpForm, ChangeUserForm, ChangeUserPassword
+from forumapp.forms import ProblemeFormCreate, ProblemeFormUpdate, CommentaireForm, SignUpForm, ChangeUserForm, ChangeUserPassword
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q, Count
 from django.contrib.auth import authenticate, login, logout, views as auth_views
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
+from django.contrib.auth.decorators import permission_required
+from django.contrib.auth.models import Permission, User
+
 
 
 
@@ -36,7 +39,7 @@ def problem_index(request, ): #Vue qui gère la page d'index
     # sujets totaux
     problems.count()
     # sujets ayant le plus de commentaire
-    comments_per_problems = Commentaire.objects.values('probleme_id','probleme__titre_probleme').annotate(com_count=Count('commentaire')).exclude(probleme__titre_probleme=None).order_by('-com_count')
+    comments_per_problems = Commentaire.objects.values('probleme_id','probleme__titre_probleme').annotate(com_count=Count('commentaire')).exclude(probleme__titre_probleme=None).order_by('-com_count')[0:3]
     # sujets récents (sortir les 5 derniers sujets grâce au slice [0:5]
     problems_recent = problems.order_by('-created_at')[:5]
 
@@ -54,12 +57,12 @@ def problem_creation(request): #Vue qui gère la création de sujet
     if not request.user.is_authenticated: #vérifie que l'utilisateur est connecté
         return redirect('forumapp:login_function')
     if request.method == 'POST':
-        form = ProblemeForm(request.POST)
+        form = ProblemeFormCreate(request.POST)
         if form.is_valid():
             post = form.save()
             return redirect ('forumapp:edit_problem', pk=post.pk)
     else:
-        form = ProblemeForm()
+        form = ProblemeFormCreate()
     return render(request, 'forumapp/creation.html', {'form':form})
 
 
@@ -73,21 +76,36 @@ def problem_detail(request, pk): #A supprimer ?
 def problem_edit(request, pk): #Vue qui gère l'édition des sujets
     post = get_object_or_404(Probleme, pk=pk)
     commentaires = Commentaire.objects.filter(probleme=post).order_by('-updated_at')
-    form = ProblemeForm(instance=post)
-
-    if request.method == "POST":
-        form = ProblemeForm(request.POST, instance=post)
-        comment_form = CommentaireForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('forumapp:detail_problem', pk=post.pk)
-        if comment_form.is_valid():
-            comment = comment_form.save(commit=False)
-            comment.probleme = post
-            comment.save()
-            return redirect('forumapp:edit_problem', pk=post.pk)
-    else:
-        comment_form = CommentaireForm()
+    if not request.user.has_perm('forumapp.change_probleme'):#request.user permet d'identifier l'utilisateur connecté. Si l'utilisateur connecté n'a pas l'autorisation de modif, alors le formulaire avec lecture seule s'affiche
+        form = ProblemeFormUpdate(instance=post)
+        if request.method == "POST":
+            form = ProblemeFormUpdate(request.POST, instance=post)
+            comment_form = CommentaireForm(request.POST)
+            if form.is_valid():
+                form.save()
+                return redirect('forumapp:detail_problem', pk=post.pk)
+            if comment_form.is_valid():
+                comment = comment_form.save(commit=False)
+                comment.probleme = post
+                comment.save()
+                return redirect('forumapp:edit_problem', pk=post.pk)
+        else:
+            comment_form = CommentaireForm()
+    else: #Sinon, on affiche le formulaire sans lecture seule
+        form = ProblemeFormCreate(instance=post)
+        if request.method == "POST":
+            form = ProblemeFormCreate(request.POST, instance=post)
+            comment_form = CommentaireForm(request.POST)
+            if form.is_valid():
+                form.save()
+                return redirect('forumapp:detail_problem', pk=post.pk)
+            if comment_form.is_valid():
+                comment = comment_form.save(commit=False)
+                comment.probleme = post
+                comment.save()
+                return redirect('forumapp:edit_problem', pk=post.pk)
+        else:
+            comment_form = CommentaireForm()
     return render(request, 'forumapp/creation.html', {'post':post, 'form': form, 'comment_form':comment_form, 'commentaires': commentaires, })
 
 def problem_with_a_solution(request,):
