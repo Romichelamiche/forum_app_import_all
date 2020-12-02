@@ -23,6 +23,7 @@ import datetime
 def problem_index(request, ): #Vue qui gère la page d'index
     if not request.user.is_authenticated: #accès restreint aux utilisateurs connectés
         return redirect('forumapp:login_function')
+
     ## Pagination ##
     problems = Probleme.objects.all()
     paginator = Paginator(problems, 6)
@@ -43,6 +44,34 @@ def problem_index(request, ): #Vue qui gère la page d'index
     # sujets récents (sortir les 5 derniers sujets grâce au slice [0:5]
     problems_recent = problems.order_by('-created_at')[:5]
 
+    ## Gérer la recherche ##
+    query = request.GET.get('query')
+    if not query:
+        problem = Probleme.objects.all()
+    else:
+        # problem_count = Probleme.objects.count()
+        problem = Probleme.objects.filter(Q(titre_probleme__icontains=query) | Q(
+            desc_probleme__icontains=query))  # passer par Q pour faire des requêtes "OU" sur le champ de recherche
+
+        ## Pagination apres recherche ##
+        paginator = Paginator(problem, 6)
+        page = request.GET.get('page', 1)  # Ramene 1 si page est vide
+
+        try:
+            problems_list = paginator.page(page)  # on construit une page via paginator
+        except PageNotAnInteger:
+            problems_list = paginator.page(1)
+        except EmptyPage:
+            problems_list = paginator.page(paginator.num_pages)
+        context1 = {'problems': problems,
+                   'problems_list': problems_list,
+                   'paginator': paginator,
+                   'page': page,
+                   'comments_per_problems': comments_per_problems,
+                   'problems_recent': problems_recent,
+                   }
+        return render(request, 'forumapp/index.html', context1)
+
     #template = loader.get_template('forumapp/index.html')
     context = {'problems': problems,
                'problems_list': problems_list,
@@ -51,7 +80,10 @@ def problem_index(request, ): #Vue qui gère la page d'index
                'comments_per_problems': comments_per_problems,
                'problems_recent' : problems_recent,
                }
+
     return render(request, 'forumapp/index.html', context)
+
+
 
 def problem_creation(request): #Vue qui gère la création de sujet
     if not request.user.is_authenticated: #vérifie que l'utilisateur est connecté
@@ -112,26 +144,6 @@ def problem_with_a_solution(request,):
     problem_solved = Probleme.objects.filter(resolu_probleme=1)
     return HttpResponse(problem_solved)
 
-def search(request): #Vue qui gère la recherche dans la navbar
-    query = request.GET.get('query')
-    if not query:
-        problem = Probleme.objects.all()
-    else:
-        problem_count = Probleme.objects.count()
-        problem = Probleme.objects.filter(Q(titre_probleme__icontains=query) | Q(desc_probleme__icontains=query)) #passer par Q pour faire des requêtes "OU" sur le champ de recherche
-
-    ########## Gérer la pagination après recherche ##########
-
-    page_number = request.GET.get('page', 1)
-    paginator = Paginator(problem, 6)
-    pagination = paginator.page(page_number)
-
-    context = {
-        'problems': problem,
-        'count': problem_count,
-        'problems': pagination
-    }
-    return render(request, 'forumapp/index.html', context)
 
 def delete_problem(request, pk=None): #Vue qui gère la suppression de sujets
     pb_to_delete = get_object_or_404(Probleme, pk=pk)

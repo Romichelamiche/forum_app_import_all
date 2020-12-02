@@ -9,7 +9,6 @@ urlpatterns = [
     path('problem/create/', views.problem_creation, name= "creation_problem"),
     path('problem/detail/<int:pk>/edit/', views.problem_edit, name="edit_problem"),
     path('problem/resolved/', views.problem_with_a_solution, name="liste des problemes avec solution"),
-    path('problem/search/', views.search, name="search"),
     path('problem/delete/<int:pk>/', views.delete_problem, name="delete"),
     path('login', views.login_user, name='login_function'),
     path('logout', views.logout_user, name='logout_function'),
