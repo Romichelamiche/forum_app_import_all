@@ -1,5 +1,7 @@
 from django.db import models
-from django.contrib.auth.models import ( AbstractBaseUser, BaseUserManager, Group )
+from django.contrib.auth.models import ( AbstractBaseUser, BaseUserManager, Group, User )
+from django.http import HttpRequest as request
+from django.contrib.auth.middleware import AuthenticationMiddleware
 
 
 class Membre(models.Model):
@@ -29,6 +31,8 @@ class Probleme(models.Model):
     resolu_probleme = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, null=True)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name='probleme_created_by')
+
 
 
     def __str__(self):

@@ -12,7 +12,7 @@ from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.models import Permission, User
-
+from django.db import connection
 
 
 
@@ -24,8 +24,10 @@ def problem_index(request, ): #Vue qui gère la page d'index
     if not request.user.is_authenticated: #accès restreint aux utilisateurs connectés
         return redirect('forumapp:login_function')
 
+
     ## Pagination ##
-    problems = Probleme.objects.all()
+    #problems = Probleme.objects.all()
+    problems = Probleme.objects.raw('SELECT problem.*, count(commentaire.probleme_id) as nb_com FROM forumapp_probleme AS problem LEFT JOIN forumapp_commentaire AS commentaire ON commentaire.probleme_id = problem.id GROUP BY problem.id')
     paginator = Paginator(problems, 6)
     page = request.GET.get('page', 1) #Ramene 1 si page est vide
 
@@ -38,11 +40,15 @@ def problem_index(request, ): #Vue qui gère la page d'index
 
     ## Bloc gauche ##
     # sujets totaux
-    problems.count()
+
+    problems_raw_count = Probleme.objects.raw('SELECT * FROM forumapp_probleme')
+    problems_count = list(problems_raw_count)
+
     # sujets ayant le plus de commentaire
     comments_per_problems = Commentaire.objects.values('probleme_id','probleme__titre_probleme').annotate(com_count=Count('commentaire')).exclude(probleme__titre_probleme=None).order_by('-com_count')[0:3]
     # sujets récents (sortir les 5 derniers sujets grâce au slice [0:5]
-    problems_recent = problems.order_by('-created_at')[:5]
+    problems_recent = Probleme.objects.raw('SELECT * FROM forumapp_probleme as probleme ORDER BY probleme.created_at DESC LIMIT 5 ')
+    #problems_recent = problems.order_by('-created_at')[:5]
 
     ## Gérer la recherche ##
     query = request.GET.get('query')
@@ -63,7 +69,7 @@ def problem_index(request, ): #Vue qui gère la page d'index
             problems_list = paginator.page(1)
         except EmptyPage:
             problems_list = paginator.page(paginator.num_pages)
-        context1 = {'problems': problems,
+        context1 = {'problems_count': problems_count,
                    'problems_list': problems_list,
                    'paginator': paginator,
                    'page': page,
@@ -72,7 +78,7 @@ def problem_index(request, ): #Vue qui gère la page d'index
                    }
         return render(request, 'forumapp/index.html', context1)
 
-    #template = loader.get_template('forumapp/index.html')
+
     context = {'problems': problems,
                'problems_list': problems_list,
                'paginator' : paginator,
@@ -91,7 +97,9 @@ def problem_creation(request): #Vue qui gère la création de sujet
     if request.method == 'POST':
         form = ProblemeFormCreate(request.POST)
         if form.is_valid():
-            post = form.save()
+            #15
+            post = Probleme(titre_probleme=form.cleaned_data['titre_probleme'], desc_probleme=form.cleaned_data['desc_probleme'], created_by=request.user)
+            post.save()
             return redirect ('forumapp:edit_problem', pk=post.pk)
     else:
         form = ProblemeFormCreate()

@@ -28,7 +28,7 @@
         <div class="row justify-content-end">
             <div class="col-3">
                 <div class="card bg-light mb-3" style="max-width: 18rem;">
-                    <div class="card-header">< <font size="5pt"><strong>{{ problems.count }}</strong></font> sujets ></div>
+                    <div class="card-header">< <font size="5pt"><strong>{{ problems_count|length }}</strong></font> sujets ></div>
                     <div class="card-body">
 
                         <!-- sujets les plus commentés -->
@@ -57,6 +57,7 @@
                   <div class="card-body">
                     <h5 class="card-title"><a href="{% url 'forumapp:edit_problem' p.id %}">{{ p.titre_probleme }}</a></h5>
                     <p class="card-text">{{ p.desc_probleme }}</p>
+                    <p class="card-text"><small class="text-muted"> Créé par {{ p.created_by }}, le {{ p.created_at }} --- {{ p.nb_com }} Réponse(s)</small></p>
                   </div>
                 </div>
                 <br />

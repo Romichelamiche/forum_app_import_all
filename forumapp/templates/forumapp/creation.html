@@ -33,6 +33,7 @@
                 <p id="id_desc_probleme"> {{ form.desc_probleme }}</p>
             </div>
         </div>
+
         <!-- Gestion des boutons de soumission/annulation formulaire en fonction de s'il s'agit d'une édition ou d'une création -->
         {% if post and not user.is_staff %}
             <input class="btn btn-info" type="submit" value="Modifier" style="display:none">
