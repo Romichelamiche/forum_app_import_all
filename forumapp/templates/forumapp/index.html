@@ -55,11 +55,13 @@
                 {% for p in problems_list %}
                 <div class="card">
                   <div class="card-body">
-                    <h5 class="card-title"><a href="{% url 'forumapp:edit_problem' p.id %}">{{ p.titre_probleme }}</a></h5>
-                    <p class="card-text">{{ p.desc_probleme }}</p>
+                      <h5 class="card-title"><a href="{% url 'forumapp:edit_problem' p.id %}">{{ p.titre_probleme }}</a><span style="float:right"><a class="btn btn-primary btn-sm" href="{% url 'forumapp:favorite' p.id %}">Ajouter aux favoris</a></span></h5>
+                      <p class="card-text">{{ p.desc_probleme }}</p>
+
                     <p class="card-text"><small class="text-muted"> Créé par {{ p.created_by }}, le {{ p.created_at }} --- {{ p.nb_com }} Réponse(s)</small></p>
                   </div>
                 </div>
+                <br />
                 <br />
                 {% endfor %}
             </div>

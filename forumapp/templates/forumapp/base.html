@@ -27,6 +27,7 @@
                   {{ user.username }}
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                  <a class="dropdown-item" href="{% url 'forumapp:favorite_list' %}">Mes Favoris</a>
                   <a class="dropdown-item" href="{% url 'forumapp:edit_function' %}">Editer Profil</a>
                   <a class="dropdown-item" href="{% url 'forumapp:logout_function' %}">Déconnexion</a>
                 </div>

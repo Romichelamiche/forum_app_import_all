@@ -1,10 +1,27 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+{% extends 'forumapp/base.html' %}
+
+{% block content %}
+<div class="row justify-content-md-center">
+    <div class="col-md-auto">
+        <a class="btn btn-outline-info" href="{% url 'forumapp:index' %}" role="button">Retour vers l'accueil</a>
+    </div>
+</div>
+<br>
+{% if not pb_with_favorites %}
+<h2><span style="padding-left:300px;">Il n'y a pas encore de favoris ici !</span></h2>
+{% endif %}
+<!-- Liste des Sujets -->
+<div class="col align-self-start">
+    {% for p in pb_with_favorites %}
+        <div class="card">
+          <div class="card-body">
+              <h5 class="card-title"><a href="{% url 'forumapp:edit_problem' p.id %}">{{ p.titre_probleme }}</a><span style="float:right"><a class="btn btn-danger btn-sm" href="{% url 'forumapp:delete_favorite' p.id %}">Retirer des favoris</a></span></h5>
+              <p class="card-text">{{ p.desc_probleme }}</p>
+            <p class="card-text"><small class="text-muted"> Créé par {{ p.created_by }}, le {{ p.created_at }} --- {{ p.nb_com }} Réponse(s)</small></p>
+          </div>
+        </div>
+        <br />
+        <br />
+    {% endfor %}
+</div>
+{% endblock %}
