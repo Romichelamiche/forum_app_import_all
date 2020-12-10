@@ -4,6 +4,14 @@ from django.http import HttpRequest as request
 from django.contrib.auth.middleware import AuthenticationMiddleware
 
 
+class Favorite(models.Model):
+    user = models.ForeignKey(User, unique=False, on_delete=models.CASCADE)
+    sujet = models.ForeignKey('Probleme', unique=False, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.sujet
+
+
 class Membre(models.Model):
     nom_membre = models.CharField(max_length=200)
     prenom_membre = models.CharField(max_length=400)
@@ -32,8 +40,6 @@ class Probleme(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, null=True)
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name='probleme_created_by')
-
-
 
     def __str__(self):
         return self.titre_probleme

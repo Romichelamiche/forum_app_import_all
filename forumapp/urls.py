@@ -14,4 +14,8 @@ urlpatterns = [
     path('logout', views.logout_user, name='logout_function'),
     path('register', views.register_user, name='register_function'),
     path('edit_user', views.edit_user, name='edit_function'),
+    path('problem/favorite/<int:pk>/', views.add_favorite, name='favorite'),
+    path('problem/favorite/list/', views.list_favorite, name='favorite_list'),
+    path('problem/favorite/<int:pk>/delete', views.delete_favorite, name='delete_favorite')
+
 ]

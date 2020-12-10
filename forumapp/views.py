@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse, Http404, HttpResponseRedirect
-from forumapp.models import Membre, Probleme, Solution, Commentaire
+from forumapp.models import Membre, Probleme, Solution, Commentaire, Favorite
 from django.template import loader
 from django.shortcuts import get_object_or_404, render, redirect
 from forumapp.forms import ProblemeFormCreate, ProblemeFormUpdate, CommentaireForm, SignUpForm, ChangeUserForm, ChangeUserPassword
@@ -18,6 +18,7 @@ from django.db import connection
 
 from django.urls import reverse
 import datetime
+
 
 
 def problem_index(request, ): #Vue qui gère la page d'index
@@ -40,7 +41,6 @@ def problem_index(request, ): #Vue qui gère la page d'index
 
     ## Bloc gauche ##
     # sujets totaux
-
     problems_raw_count = Probleme.objects.raw('SELECT * FROM forumapp_probleme')
     problems_count = list(problems_raw_count)
 
@@ -214,6 +214,27 @@ class PasswordChangeConfView(SuccessMessageMixin, auth_views.PasswordChangeView)
 
     success_message = 'Votre mot de passe a été modifié avec succès !'
 
+def add_favorite(request, pk):
+    for p in Probleme.objects.raw('SELECT id FROM forumapp_probleme WHERE id = %s', [pk]):#Accéder aux instances
+        current_problem = p.id
 
+    with connection.cursor() as cursor:
+        cursor.execute('INSERT INTO forumapp_favorite (sujet_id, user_id) VALUES (%s, %s)',
+                       [current_problem, request.user.id])
+        messages.success(request, 'Sujet ajouté à vos favoris !')
+    return redirect('forumapp:index')
 
+def list_favorite(request, ):
+    pb_with_favorites = Probleme.objects.raw('SELECT * FROM forumapp_probleme AS fpr LEFT JOIN forumapp_favorite AS ffa ON ffa.sujet_id = fpr.id WHERE ffa.user_id = %s', [request.user.id])
 
+    return render(request, 'forumapp/favorite_index.html', {'pb_with_favorites':pb_with_favorites})
+
+def delete_favorite(request, pk):
+    for p in Probleme.objects.raw('SELECT id FROM forumapp_probleme WHERE id = %s', [pk]):#Accéder aux instances
+        current_problem = p.id
+
+    with connection.cursor() as cursor:
+        cursor.execute('DELETE FROM forumapp_favorite WHERE sujet_id=%s AND user_id=%s',
+                       [current_problem, request.user.id])
+        messages.success(request, 'Sujet supprimé des favoris !')
+    return redirect('forumapp:favorite_list')
