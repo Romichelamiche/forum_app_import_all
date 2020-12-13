@@ -75,6 +75,7 @@ def problem_index(request, ): #Vue qui gère la page d'index
                    'page': page,
                    'comments_per_problems': comments_per_problems,
                    'problems_recent': problems_recent,
+                    'problems': problems,
                    }
         return render(request, 'forumapp/index.html', context1)
 
@@ -115,7 +116,8 @@ def problem_detail(request, pk): #A supprimer ?
 
 def problem_edit(request, pk): #Vue qui gère l'édition des sujets
     post = get_object_or_404(Probleme, pk=pk)
-    commentaires = Commentaire.objects.filter(probleme=post).order_by('-updated_at')
+    commentaires = Commentaire.objects.raw('SELECT com.id, com.created_at as created, user.username as who, com.commentaire as desc FROM forumapp_commentaire AS com LEFT JOIN forumapp_probleme AS prob ON prob.id = com.probleme_id LEFT JOIN auth_user as user ON user.id = com.created_by_id WHERE com.probleme_id = %s',[pk])
+    #commentaires = Commentaire.objects.filter(probleme=post).order_by('-updated_at')
     if not request.user.has_perm('forumapp.change_probleme'):#request.user permet d'identifier l'utilisateur connecté. Si l'utilisateur connecté n'a pas l'autorisation de modif, alors le formulaire avec lecture seule s'affiche
         form = ProblemeFormUpdate(instance=post)
         if request.method == "POST":
@@ -125,8 +127,7 @@ def problem_edit(request, pk): #Vue qui gère l'édition des sujets
                 form.save()
                 return redirect('forumapp:detail_problem', pk=post.pk)
             if comment_form.is_valid():
-                comment = comment_form.save(commit=False)
-                comment.probleme = post
+                comment = Commentaire(commentaire=comment_form.cleaned_data['commentaire'], probleme_id=pk, created_by_id=request.user.id)
                 comment.save()
                 return redirect('forumapp:edit_problem', pk=post.pk)
         else:
@@ -140,8 +141,8 @@ def problem_edit(request, pk): #Vue qui gère l'édition des sujets
                 form.save()
                 return redirect('forumapp:detail_problem', pk=post.pk)
             if comment_form.is_valid():
-                comment = comment_form.save(commit=False)
-                comment.probleme = post
+                comment = Commentaire(commentaire=comment_form.cleaned_data['commentaire'], probleme_id=pk,
+                                      created_by_id=request.user.id)
                 comment.save()
                 return redirect('forumapp:edit_problem', pk=post.pk)
         else:

@@ -49,17 +49,17 @@
     </div>
 </div>
 <br />
-{% for c in post.commentaire_set.all %}
+{% for c in commentaires %}
 <div class="container">
     <div class="row">
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
-                    Ajouté le {{ c.created_at }}
+                    Ajouté le {{ c.created }} par {{ c.who }}
                 </div>
                 <div class="card-body">
                     <div class="form-group">
-                        <p id="id_commentaire_probleme">{{ c.commentaire }}</p>
+                        <p id="id_commentaire_probleme">{{ c.desc }}</p>
                     </div>
                 </div>
             </div>
